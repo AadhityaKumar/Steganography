@@ -5,8 +5,8 @@ import streamlit as st
 
 p = st.file_uploader("Choose a carrier file")
 m = st.file_uploader("Choose a secret message file")
-s = st.text_input("number of bits to be skipped", "")
-l = st.text_input("length of bits to be skipped between alteration", "")
+s = st.text_input("number of bits to be skipped", min_value=0, value=1000)
+l = st.text_input("length of bits to be skipped between alteration", min_value=1, value=2)
 c = st.checkbox("Enable alternate spacing mode (c)")
 
 # Example run: py steganography.py carrier.jpg message.jpg 1000 2 1
