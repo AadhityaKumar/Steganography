@@ -64,7 +64,7 @@ if(userName == "aadhitya" and passWord == "ssen"):
                 steg_fn = f"steg_{p.name}"
                 st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
 
-                bucket_name = "your-bucket-name"  # Replace with your bucket name
+                bucket_name = "ex_buck_neo"
                 gcs_url = upload_to_gcs(bucket_name, steg_fn, carrier_bytes)
                 st.success(f"Uploaded to GCS: {gcs_url}")
                 st.markdown(f"[Download from GCS]({gcs_url})")
