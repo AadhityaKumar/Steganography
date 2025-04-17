@@ -14,7 +14,7 @@ c = st.text_input("Alteration mode? (1 if yes)", "")
 # Embeding message into carrier
 
 
-ext = os.path.splitext(m)
+ext = st.text_input("extention of the message file used (png, mov, txt?)", "")
 
 bytes = p.getvalue()
 bini = m.getvalue()
