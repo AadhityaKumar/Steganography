@@ -24,8 +24,8 @@ if p and m:
     alt = [l, l*2, 1]
     u = 0
 
-    if( len(bytes) - s < len(bini) * l):
-        print("Secret message too long")
+    if len(bytes) - s < len(bini) * l:
+        st.error("Secret message too long")
     else:
 
 
