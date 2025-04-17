@@ -33,7 +33,6 @@ if(userName == "aadhitya" and passWord == "ssen"):
 
             alt = [l, l * 2, max(1, l // 2)]    
             u = 0
-            bucketName = os.environ["BUCKET_NAME"]
 
             if len(carrier_bytes) - s < len(bini) * l:
                 st.error("Secret message too long")
@@ -56,7 +55,7 @@ if(userName == "aadhitya" and passWord == "ssen"):
                 steg_fn = f"steg_{p.name}"
                 st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
                 st.info("length of secret message is " +  str(len(bini)))
-                
+
 
 
     # Extracting the message from carrier
