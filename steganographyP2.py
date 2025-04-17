@@ -1,76 +1,57 @@
-import os
-import sys
-import binascii
 import streamlit as st
+from io import BytesIO
 
-p = st.file_uploader("Choose a carrier file")
-m = st.file_uploader("Choose a secret message file")
-s = st.text_input("number of bits to be skipped", "")
-l = st.text_input("length of bits to be skipped between alteration", "")
-c = st.text_input("Alteration mode? (1 if yes)", "")
+st.title("Steganography Encoder/Decoder")
 
-# Example run: py steganography.py carrier.jpg message.jpg 1000 2 1
+# Upload files
+carrier_file = st.file_uploader("Choose a carrier file (e.g., image/video)", type=["jpg", "png", "bmp", "mp4", "mov"])
+secret_file = st.file_uploader("Choose a secret message file (any format)")
 
-# Embeding message into carrier
+# User inputs
+s = st.number_input("Bits to skip at start (s)", min_value=0, value=1000)
+l = st.number_input("Bit spacing between changes (l)", min_value=1, value=2)
+c = st.checkbox("Enable alternate spacing mode (c)")
 
+if carrier_file and secret_file:
+    carrier_bytes = bytearray(carrier_file.read())
+    message_bytes = bytearray(secret_file.read())
+    message_ext = secret_file.name.split(".")[-1]
 
-if p and m:
-
-    bytes = bytearray(p.read())
-    bini = bytearray(m.read())
-    ext = m.name.split(".")[-1]
-
-
-    alt = [l, l*2, 1]
+    alt = [l, l * 2, max(1, l // 2)]
     u = 0
 
-    if len(bytes) - s < len(bini) * l:
-        st.error("Secret message too long")
+    if len(carrier_bytes) - s < len(message_bytes) * 8 * l:
+        st.error("Secret message too large for selected carrier and settings.")
     else:
-
-
         x = s
-        for i in bini:
-            for bit in format(i, '08b'):
-                bytes[x] = (bytes[x] & 0b11111110) | int(bit)
-
-                if c == 1:
+        for byte in message_bytes:
+            for bit in format(byte, '08b'):
+                carrier_bytes[x] = (carrier_bytes[x] & 0b11111110) | int(bit)
+                if c:
                     x += alt[u]
-                    u += 1
-                    if u > 2:
-                        u = 0
+                    u = (u + 1) % 3
                 else:
                     x += l
 
-        steg_fn = f"steg_{p.name}"
-        st.download_button("Steganographized file: ", data = bytes, file_name = steg_fn)
+        stego_filename = f"stego_{carrier_file.name}"
+        st.success("Message embedded successfully!")
+        st.download_button("Download Stego File", data=carrier_bytes, file_name=stego_filename)
 
+        # Extract the message
+        z = s
+        u = 0
+        extracted_bits = []
+        for _ in range(len(message_bytes) * 8):
+            extracted_bits.append(str(carrier_bytes[z] & 1))
+            if c:
+                z += alt[u]
+                u = (u + 1) % 3
+            else:
+                z += l
 
-    # Extracting the message from carrier
+        extracted_bytes = bytearray(
+            int("".join(extracted_bits[i:i + 8]), 2) for i in range(0, len(extracted_bits), 8)
+        )
 
-    new_file = []
-    z = s
-
-    u = 0
-    for i in range(len(bini) * 8):
-        
-        new_file.append(str(bytes[z] & 1))
-
-        if c == 1:
-            z += alt[u]
-            u += 1
-            if u > 2:
-                u = 0
-        else:
-            z += l
-
-    nf = bytearray(int(''.join(new_file[i:i+8]), 2) for i in range(0, len(new_file), 8))
-
-    rf = "extracted." + ext[1]
-    st.download_button("Extracted file: ", data = nf, file_name = rf)
-
-
-
-# Someone could find M or P given only L by starting at various points of the
-# steganographized text and observing every Lth bit. They would have to try it
-# over and over at various points because they have to guess where the offset is.
+        extracted_filename = f"extracted.{message_ext}"
+        st.download_button("Download Extracted Message", data=extracted_bytes, file_name=extracted_filename)
