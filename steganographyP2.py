@@ -47,7 +47,7 @@ if(selection == "Embed a file"):
 
             steg_fn = f"steg_{p.name}"
             st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
-            st.info("length of secret message is ", len(bini))
+            st.info("length of secret message is " +  str(len(bini)))
 
 
 # Extracting the message from carrier
