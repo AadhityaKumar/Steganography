@@ -2,7 +2,16 @@ import os
 import sys
 import binascii
 import streamlit as st
+from google.cloud import storage
+from io import BytesIO
 
+
+def upload_to_gcs(bucket_name, destination_blob_name, file_bytes):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+    blob.upload_from_file(BytesIO(file_bytes), rewind=True)
+    return f"https://storage.googleapis.com/{bucket_name}/{destination_blob_name}"
 
 userName = st.text_input("enter username")
 passWord = st.text_input("enter password")
@@ -54,6 +63,12 @@ if(userName == "aadhitya" and passWord == "ssen"):
 
                 steg_fn = f"steg_{p.name}"
                 st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
+
+                bucket_name = "your-bucket-name"  # Replace with your bucket name
+                gcs_url = upload_to_gcs(bucket_name, steg_fn, carrier_bytes)
+                st.success(f"Uploaded to GCS: {gcs_url}")
+                st.markdown(f"[Download from GCS]({gcs_url})")
+
                 st.info("length of secret message is " +  str(len(bini)))
 
 
