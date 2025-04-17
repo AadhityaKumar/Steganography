@@ -47,7 +47,7 @@ if(selection == "Embed a file"):
 
             steg_fn = f"steg_{p.name}"
             st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
-            st.info("length of secret message is " + len(bini))
+            st.info("length of secret message is ", len(bini))
 
 
 # Extracting the message from carrier
@@ -60,31 +60,33 @@ elif(selection == "Extract message from file"):
     c = st.checkbox("Enable alternate spacing mode (c)")
     ext = st.text_input("file extension of secret message (png, jpg, mov, etc)")
 
-    carrier_bytes = bytearray(p.read())
+    if bini and p:
 
-    alt = [l, l * 2, max(1, l // 2)]    
+        carrier_bytes = bytearray(p.read())
+
+        alt = [l, l * 2, max(1, l // 2)]    
 
 
-    new_file = []
-    z = s
+        new_file = []
+        z = s
 
-    u = 0
-    for i in range(bini * 8):
-        
-        new_file.append(str(carrier_bytes[z] & 1))
+        u = 0
+        for i in range(bini * 8):
+            
+            new_file.append(str(carrier_bytes[z] & 1))
 
-        if c == 1:
-            z += alt[u]
-            u += 1
-            if u > 2:
-                u = 0
-        else:
-            z += l
+            if c == 1:
+                z += alt[u]
+                u += 1
+                if u > 2:
+                    u = 0
+            else:
+                z += l
 
-    nf = bytearray(int(''.join(new_file[i:i+8]), 2) for i in range(0, len(new_file), 8))
+        nf = bytearray(int(''.join(new_file[i:i+8]), 2) for i in range(0, len(new_file), 8))
 
-    rf = "extracted." + ext
-    st.download_button("Extracted file: ", data = bytes(nf), file_name = rf)
+        rf = "extracted." + ext
+        st.download_button("Extracted file: ", data = bytes(nf), file_name = rf)
 
 
 
