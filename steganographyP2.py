@@ -21,7 +21,7 @@ if p and m:
     ext = m.name.split(".")[-1]
 
 
-    alt = [l, l*2, int(l/2)]
+    alt = [l, l*2, max(1, int(l/2))]
     u = 0
 
     if( len(bytes) - s < len(bini) * l):
