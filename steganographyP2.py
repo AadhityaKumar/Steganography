@@ -1,15 +1,8 @@
 import os
 import sys
 import binascii
-from google.cloud import storage
-from io import BytesIO
 import streamlit as st
 
-def uploader(buckt, dest, file):
-    client = storage.Client()
-    bucket = client.bucket(buckt)
-    blob = bucket.blob(dest)
-    blob.upload_from_file(file)
 
 userName = st.text_input("enter username")
 passWord = st.text_input("enter password")
@@ -62,8 +55,8 @@ if(userName == "aadhitya" and passWord == "ssen"):
 
                 steg_fn = f"steg_{p.name}"
                 st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
-                uploader(bucketName, steg_fn, BytesIO(carrier_bytes))
                 st.info("length of secret message is " +  str(len(bini)))
+                
 
 
     # Extracting the message from carrier
