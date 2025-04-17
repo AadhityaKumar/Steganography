@@ -35,7 +35,7 @@ if carrier_file and secret_file:
 
         stego_filename = f"stego_{carrier_file.name}"
         st.success("Message embedded successfully!")
-        st.download_button("Download Stego File", data=carrier_bytes, file_name=stego_filename)
+        st.download_button("Download Stego File", data=bytes(carrier_bytes), file_name=stego_filename)
 
         # Extract the message
         z = s
@@ -54,4 +54,4 @@ if carrier_file and secret_file:
         )
 
         extracted_filename = f"extracted.{message_ext}"
-        st.download_button("Download Extracted Message", data=extracted_bytes, file_name=extracted_filename)
+        st.download_button("Download Extracted Message", data=bytes(extracted_bytes), file_name=extracted_filename)
