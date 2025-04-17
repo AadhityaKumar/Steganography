@@ -14,65 +14,61 @@ c = st.text_input("Alteration mode? (1 if yes)", "")
 # Embeding message into carrier
 
 
-ext = st.text_input("extention of the message file used (png, mov, txt?)", "")
+if p and m:
 
-bytes = bytearray(p.read())
-bini = bytearray(m.read())
-
-alt = [l, l*2, int(l/2)]
-u = 0
-
-if( len(bytes) - s < len(bini) * l):
-    print("Secret message too long")
-else:
+    bytes = bytearray(p.read())
+    bini = bytearray(m.read())
+    ext = m.name.split(".")[-1]
 
 
-    x = s
-    for i in bini:
-        for bit in format(i, '08b'):
-            bytes[x] = (bytes[x] & 0b11111110) | int(bit)
+    alt = [l, l*2, int(l/2)]
+    u = 0
 
-            if c == 1:
-                x += alt[u]
-                u += 1
-                if u > 2:
-                    u = 0
-            else:
-                x += l
-
-
-    file.seek(0)
-    file.write(bytes)
-    file.truncate()
-
-file2.close()
-
-# Extracting the message from carrier
-
-new_file = []
-z = s
-
-u = 0
-for i in range(len(bini) * 8):
-    
-    new_file.append(str(bytes[z] & 1))
-
-    if c == 1:
-        z += alt[u]
-        u += 1
-        if u > 2:
-            u = 0
+    if( len(bytes) - s < len(bini) * l):
+        print("Secret message too long")
     else:
-        z += l
 
-nf = bytearray(int(''.join(new_file[i:i+8]), 2) for i in range(0, len(new_file), 8))
 
-rf = "extracted." + ext[1]
-f = open(rf, "wb")
-f.write(nf)
+        x = s
+        for i in bini:
+            for bit in format(i, '08b'):
+                bytes[x] = (bytes[x] & 0b11111110) | int(bit)
 
-f.close()
-file.close()
+                if c == 1:
+                    x += alt[u]
+                    u += 1
+                    if u > 2:
+                        u = 0
+                else:
+                    x += l
+
+        steg_fn = f"steg_{p.name}"
+        st.download_button("Steganographized file: ", data = bytes, file_name = steg_fn)
+
+
+    # Extracting the message from carrier
+
+    new_file = []
+    z = s
+
+    u = 0
+    for i in range(len(bini) * 8):
+        
+        new_file.append(str(bytes[z] & 1))
+
+        if c == 1:
+            z += alt[u]
+            u += 1
+            if u > 2:
+                u = 0
+        else:
+            z += l
+
+    nf = bytearray(int(''.join(new_file[i:i+8]), 2) for i in range(0, len(new_file), 8))
+
+    rf = "extracted." + ext[1]
+    st.download_button("Extracted file: ", data = nf, file_name = rf)
+
 
 
 # Someone could find M or P given only L by starting at various points of the
