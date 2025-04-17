@@ -18,7 +18,7 @@ if p and m:
 
     carrier_bytes = bytearray(p.read())
     bini = bytearray(m.read())
-    ext = m.name.split(".")[-1]
+    ext = m.name.split(".")
 
 
     alt = [l, l * 2, max(1, l // 2)]    
