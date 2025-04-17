@@ -2,9 +2,8 @@ import os
 import sys
 import binascii
 import streamlit as st
-from streamlit_option_menu import option_menu
 
-selection = option_menu("Select operation: ", ["Embed a file", "Extract message from file"])
+selection = st.radio("Select operation: ", ["Embed a file", "Extract message from file"])
 
 if(selection == "Embed a file"):
 
