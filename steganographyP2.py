@@ -56,11 +56,11 @@ elif(selection == "Extract message from file"):
     p = st.file_uploader("Choose a carrier file")
     s = st.number_input("number of bits to be skipped", min_value=0, value=1000)
     l = st.number_input("length of bits to be skipped between alteration", min_value=1, value=2)
-    bini = st.number_input("length of secret message")
+    bini = st.number_input("length of secret message", min_value = 0, value=1)
     c = st.checkbox("Enable alternate spacing mode (c)")
-    ext = st.text_input("file extension of secret message (png, jpg, mov, etc)")
+    ext = st.text_input("file extension of secret message (png, jpg, mov, etc.)")
 
-    if bini and p:
+    if bini and p and ext:
 
         carrier_bytes = bytearray(p.read())
 
