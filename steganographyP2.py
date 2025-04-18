@@ -25,9 +25,9 @@ if(selection == "Embed a file"):
 
         p = st.file_uploader("Choose a carrier file")
         m = st.file_uploader("Choose a secret message file")
-        s = st.number_input("number of bits to be skipped", min_value=0, value=1000)
-        l = st.number_input("length of bits to be skipped between alteration", min_value=1, value=2)
-        c = st.checkbox("Enable alternate spacing mode (c)")
+        s = st.number_input("number of bits to be skipped (s)", min_value=0, value=1000)
+        l = st.number_input("length of bits to be skipped between alteration (l)", min_value=1, value=2)
+        c = st.checkbox("enable alternate spacing mode (c)")
 
         # Example run: py steganography.py carrier.jpg message.jpg 1000 2 1
 
