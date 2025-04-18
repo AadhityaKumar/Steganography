@@ -4,7 +4,8 @@ from io import BytesIO
 
 
 
-steg_files = []
+if "steg_files" not in st.session_state:
+    st.session_state.steg_files = []
 if "u_names" not in st.session_state:
     st.session_state.u_names = []
     st.session_state.pswds = []
@@ -64,7 +65,7 @@ if(selection == "Embed a file"):
                 steg_file = BytesIO(bytes(carrier_bytes))
                 steg_file.name = f"steg_{p.name}"
 
-                steg_files.append((steg_file, bytes(carrier_bytes)))
+                st.session_state.steg_files.append((steg_file, bytes(carrier_bytes)))
                 st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
 
                 st.info("length of secret message is " +  str(len(bini)))
@@ -116,7 +117,7 @@ elif(selection == "View Steg Files"):
 
     zippy = BytesIO()
     with zipfile.ZipFile(zippy, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        for filename, filedata in steg_files:
+        for filename, filedata in st.session_state.steg_files:
             zip_file.writestr(filename, filedata)
     
     zippy.seek(0)
