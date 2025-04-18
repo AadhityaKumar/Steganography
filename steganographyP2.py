@@ -1,27 +1,22 @@
-import os
-import sys
-import binascii
+import zipfile
 import streamlit as st
-from google.cloud import storage
 from io import BytesIO
 
+selection = st.radio("Select operation: ", ["Embed a file", "Extract message from file", "Register", "View Steg Files"])
 
-def upload_to_gcs(bucket_name, destination_blob_name, file_bytes):
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-    blob.upload_from_file(BytesIO(file_bytes), rewind=True)
-    return f"https://storage.googleapis.com/{bucket_name}/{destination_blob_name}"
 
-userName = st.text_input("enter username")
-passWord = st.text_input("enter password")
-
-if(userName == "aadhitya" and passWord == "ssen"):
+steg_files = []
+u_names = []
+pswds = []
         
 
-    selection = st.radio("Select operation: ", ["Embed a file", "Extract message from file"])
 
-    if(selection == "Embed a file"):
+if(selection == "Embed a file"):
+
+    userName = st.text_input("enter username")
+    passWord = st.text_input("enter password")
+
+    if(userName in u_names and passWord == pswds[u_names.index(userName)]):
 
         p = st.file_uploader("Choose a carrier file")
         m = st.file_uploader("Choose a secret message file")
@@ -62,19 +57,21 @@ if(userName == "aadhitya" and passWord == "ssen"):
                             x += l
 
                 steg_fn = f"steg_{p.name}"
+                steg_file = BytesIO(bytes(carrier_bytes))
+                steg_file.name = f"steg_{p.name}"
+
+                steg_files.append(steg_file, carrier_bytes)
                 st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
 
-                bucket_name = "ex_buck_neo"
-                gcs_url = upload_to_gcs(bucket_name, steg_fn, carrier_bytes)
-                st.success(f"Uploaded to GCS: {gcs_url}")
-                st.markdown(f"[Download from GCS]({gcs_url})")
-
                 st.info("length of secret message is " +  str(len(bini)))
+
+    else:
+        st.error("incorrect password or username")
 
 
 
     # Extracting the message from carrier
-    elif(selection == "Extract message from file"):
+elif(selection == "Extract message from file"):
 
         p = st.file_uploader("Choose a carrier file")
         s = st.number_input("number of bits to be skipped", min_value=0, value=1000)
@@ -110,8 +107,36 @@ if(userName == "aadhitya" and passWord == "ssen"):
 
             rf = "extracted." + ext
             st.download_button("Extracted file: ", data = bytes(nf), file_name = rf)
-else:
-                    st.error("incorrect password or username")
+
+elif(selection == "View Steg Files"):
+
+    zippy = BytesIO()
+    with zipfile.ZipFile(zippy, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        for filename, filedata in steg_files:
+            zip_file.writestr(filename, filedata)
+    
+    zippy.seek(0)
+
+    st.download_button("Download Steg Files", data = zippy, file_name = "steg_files.zip", mime = "application/zip")
+
+
+elif(selection == "Register"):
+        
+    unm = st.text_input("Enter username")
+    ps = st.text_input("Enter password")
+
+    if unm and ps:
+        if unm not in u_names:
+            u_names.append(unm)
+            pswds.append(ps)
+            st.success("Account created")
+        else:
+            st.error("Username already exists")
+
+
+
+
+
 
 
 
