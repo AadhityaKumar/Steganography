@@ -20,7 +20,7 @@ if(selection == "Embed a file"):
     userName = st.text_input("enter username")
     passWord = st.text_input("enter password")
 
-    if(userName in u_names and passWord == pswds[u_names.index(userName)]):
+    if(userName in st.session_state.u_names and passWord == st.session_state.pswds[st.session_state.u_names.index(userName)]):
 
         p = st.file_uploader("Choose a carrier file")
         m = st.file_uploader("Choose a secret message file")
