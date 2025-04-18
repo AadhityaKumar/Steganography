@@ -5,8 +5,9 @@ from io import BytesIO
 
 
 steg_files = []
-u_names = []
-pswds = []
+if "u_names" not in st.session_state:
+    st.session_state.u_names = []
+    st.session_state.pswds = []
         
 
 selection = st.radio("Select operation: ", ["Embed a file", "Extract message from file", "Register", "View Steg Files"])
@@ -129,9 +130,9 @@ elif(selection == "Register"):
     ps = st.text_input("Enter password")
 
     if unm and ps:
-        if unm not in u_names:
-            u_names.append(unm)
-            pswds.append(ps)
+        if unm not in st.session_state.u_names:
+            st.session_state.u_names.append(unm)
+            st.session_state.pswds.append(ps)
             st.success("Account created")
         else:
             st.error("Username already exists")
