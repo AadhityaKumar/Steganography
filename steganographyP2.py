@@ -2,13 +2,16 @@ import zipfile
 import streamlit as st
 from io import BytesIO
 
-selection = st.radio("Select operation: ", ["Embed a file", "Extract message from file", "Register", "View Steg Files"])
 
 
 steg_files = []
 u_names = []
 pswds = []
         
+
+selection = st.radio("Select operation: ", ["Embed a file", "Extract message from file", "Register", "View Steg Files"])
+
+
 
 
 if(selection == "Embed a file"):
