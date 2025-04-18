@@ -65,7 +65,7 @@ if(selection == "Embed a file"):
                 steg_file = BytesIO(bytes(carrier_bytes))
                 steg_file.name = f"steg_{p.name}"
 
-                st.session_state.steg_files.append((steg_file, bytes(carrier_bytes)))
+                st.session_state.steg_files.append((steg_fn, bytes(carrier_bytes)))
                 st.download_button("Steganographized file: ", data = bytes(carrier_bytes), file_name = steg_fn)
 
                 st.info("length of secret message is " +  str(len(bini)))
